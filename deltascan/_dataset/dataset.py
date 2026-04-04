@@ -1,0 +1,334 @@
+from functools import cached_property
+
+import oddments as odd
+import polars as pl
+import pandas as pd
+
+from .._column import Column
+from .._context_columns import ContextColumns
+from ._schema import Schema
+
+
+class Dataset(odd.ReprMixin):
+    '''
+    Description
+    --------------------
+    Dataset on one side of the comparison.
+
+    Class Attributes
+    --------------------
+    ...
+
+    Instance Attributes
+    --------------------
+    _parent : DeltaScan
+        Parent instance to which the dataset belongs.
+    _side : str
+        Indicates the dataset's position in the comparison: 'left' or 'right'.
+    _alias : str
+        See parent class documentation.
+    _lf : pl.LazyFrame
+        Lazy representation of the data.
+    _schema : Schema
+        Schema of the LazyFrame. Excludes the side flag column.
+    _context : ContextColumns
+        See parent class documentation.
+    '''
+
+    #╭-------------------------------------------------------------------------╮
+    #| Class Attributes                                                        |
+    #╰-------------------------------------------------------------------------╯
+
+    _repr_attrs = [
+        'side',
+        'alias',
+        ]
+
+
+    #╭-------------------------------------------------------------------------╮
+    #| Initialize Instance                                                     |
+    #╰-------------------------------------------------------------------------╯
+
+    def __init__(self, parent, side, data, alias, context):
+        self._parent = parent
+        self._side = side
+        self._alias = self._init_alias(alias)
+        self._lf, self._schema = self._init_data(data)
+        self._context = self._init_context(context)
+
+
+    #╭-------------------------------------------------------------------------╮
+    #| Properties                                                              |
+    #╰-------------------------------------------------------------------------╯
+
+    @property
+    def side(self):
+        return self._side
+
+
+    @property
+    def alias(self):
+        return self._alias
+
+
+    @property
+    def lf(self):
+        return self._lf
+
+
+    @property
+    def schema(self):
+        return self._schema
+
+
+    @property
+    def context(self):
+        return self._context
+
+
+    @property
+    def join_on(self):
+        return self._parent.join_on
+
+
+    #╭-------------------------------------------------------------------------╮
+    #| Cached Properties                                                       |
+    #╰-------------------------------------------------------------------------╯
+
+    @cached_property
+    def side_flag(self):
+        ''' boolean column indicating the origin of each row '''
+        return Column(f'_{self.side}_flag')
+
+
+    @cached_property
+    def other_side(self):
+        ''' returns the label of the opposing side '''
+        sides = ['left','right']
+
+        other_sides = dict(zip(
+            sides,
+            reversed(sides),
+            strict=True
+            ))
+
+        return other_sides[self.side]
+
+
+    #╭-------------------------------------------------------------------------╮
+    #| Instance Methods                                                        |
+    #╰-------------------------------------------------------------------------╯
+
+    def apply_alias(self, column):
+        ''' apply alias to a column name '''
+        return self._parent.column_template.format(
+            alias=self.alias,
+            column=column
+            )
+
+
+    def _add_side_flag(self, obj):
+        ''' adds the side flag column to a Polars object '''
+        expr = pl.lit(True).alias(self.side_flag.name)
+        return obj.with_columns(expr)
+
+
+    def _to_not_in_description(self, dim):
+        ''' generates the comparison label for items found on one side but not
+            the other '''
+        dim = 'cols' if dim == 'columns' else dim
+        return f'{self.side} {dim} not in {self.other_side}'
+
+
+    def _init_alias(self, value):
+        '''
+        Description
+        ------------
+        Ensures the alias is a non-empty string and unique across both
+        datasets.
+
+        Parameters
+        ------------
+        value : str
+            Dataset alias.
+
+        Returns
+        ------------
+        value : str
+            Validated alias.
+        '''
+
+        odd.validate_value(
+            value=value,
+            name=f'{self.side}_alias',
+            types=str,
+            empty_ok=False
+            )
+
+        if (
+            self.side == 'right'
+            and self._parent._left_data.alias == value
+            ):
+            raise ValueError(
+                "'left_alias' and 'right_alias' must be "
+                f"different, got {value!r} for both."
+                )
+
+        return value
+
+
+    def _init_data(self, data):
+        ''' resolves the data argument into LazyFrame and Schema instances '''
+
+        # data parameter name
+        param_name = f'{self.side}_data'
+
+        # convert data to LazyFrame
+        lf = odd.to_polars_frame(
+            obj=data,
+            name=param_name,
+            lazy=True
+            )
+
+        # add row index column if joining on index
+        if self._parent._join_on_index:
+            lf = lf.with_row_index()
+
+        # collect schema
+        schema = Schema(dataset=self, lf=lf)
+
+        # verify there are no missing join keys
+        missing_join_keys = [
+            col for col in self.join_on
+            if col not in schema
+            ]
+
+        if missing_join_keys:
+            raise ValueError(
+                f"{param_name!r} is missing join keys specified in "
+                f"'join_on': {missing_join_keys}"
+                )
+
+        # drop duplicate rows
+        lf = lf.unique()
+
+        # check for join key duplicates
+        if not self._parent.allow_duplicates:
+            odd.assert_unique(
+                lf,
+                subset=self.join_on,
+                name=param_name,
+                null_policy='error'
+                )
+
+        # tag column names with dataset's alias
+        lf = lf.rename({
+            col: self.apply_alias(col)
+            for col in schema
+            if col not in self.join_on
+            })
+
+        # add side-flag column
+        lf = self._add_side_flag(lf)
+
+        return lf, schema
+
+
+    def _init_context(self, value):
+        args = self._trifurcate_context(value)
+        return ContextColumns(self, *args)
+
+
+    def _trifurcate_context(self, value):
+        ''' resolves the context argument into ContextColumns parameters '''
+
+        def to_aliased_set(column_list):
+            column_set = set(column_list)
+
+            aliased_set = {
+                self.apply_alias(col)
+                for col in column_set
+                }
+
+            return aliased_set
+
+
+        # context parameter name
+        param_name = f'{self.side}_context'
+
+        # validate parameter type
+        odd.validate_value(
+            value=value,
+            name=param_name,
+            types=(str, list, dict),
+            none_ok=True
+            )
+
+        # set up default values
+        ordered = list()
+        universal = set()
+        targeted = dict()
+
+        # return early if parameter is None
+        if value is None:
+            return ordered, universal, targeted
+
+        # if parameter is str or dict, convert to list
+        value = odd.ensure_list(value)
+
+        # parse parameter
+        for i, x in enumerate(value):
+            odd.validate_value(
+                value=x,
+                name=f'{param_name!r} element {i}',
+                types=(str, dict),
+                empty_ok=False
+                )
+
+            if isinstance(x, str):
+                ordered.append(x)
+                continue
+
+            for k in x.keys():
+                v = odd.sanitize_subset(x[k])
+                targeted.setdefault(k, []).extend(v)
+
+        # update columns to be applied universally
+        universal.update(
+            to_aliased_set(ordered)
+            )
+
+        # for each targeted list, update column order then drop duplicates and
+        # apply alias
+        for k in list(targeted.keys()):
+            v = targeted[k]
+            ordered.extend(v)
+            targeted[k] = to_aliased_set(v)
+
+        # validate ordered list against schema columns
+        ordered = odd.sanitize_subset(
+            subset=ordered,
+            superset=self.schema.columns,
+            subset_name=repr(param_name),
+            superset_name='schema'
+            )
+
+        # verify parameter excludes join keys
+        join_keys = [
+            col for col in ordered
+            if col in self.join_on
+            ]
+
+        if join_keys:
+            raise ValueError(
+                f"{param_name!r} cannot include join "
+                f"keys from 'join_on': {join_keys}"
+                )
+
+        # convert to list of column instances
+        ordered = [
+            Column(name=col, dataset=self)
+            for col in ordered
+            ]
+
+        return ordered, universal, targeted
