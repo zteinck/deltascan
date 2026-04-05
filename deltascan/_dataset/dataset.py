@@ -2,7 +2,6 @@ from functools import cached_property
 
 import oddments as odd
 import polars as pl
-import pandas as pd
 
 from .._column import Column
 from .._context_columns import ContextColumns
@@ -91,6 +90,33 @@ class Dataset(odd.ReprMixin):
         return self._parent.join_on
 
 
+    @property
+    def other(self):
+        ''' the opposing dataset instance '''
+        if self is self._parent._left_data:
+            return self._parent._right_data
+        else:
+            return self._parent._left_data
+
+
+    @property
+    def column_count(self):
+        ''' total number of columns '''
+        return len(self.schema)
+
+
+    @property
+    def value_count(self):
+        ''' total number of values '''
+        return self.row_count * self.column_count
+
+
+    @property
+    def shape(self):
+        ''' shape of the dataset '''
+        return self.row_count, self.column_count
+
+
     #╭-------------------------------------------------------------------------╮
     #| Cached Properties                                                       |
     #╰-------------------------------------------------------------------------╯
@@ -102,17 +128,9 @@ class Dataset(odd.ReprMixin):
 
 
     @cached_property
-    def other_side(self):
-        ''' returns the label of the opposing side '''
-        sides = ['left','right']
-
-        other_sides = dict(zip(
-            sides,
-            reversed(sides),
-            strict=True
-            ))
-
-        return other_sides[self.side]
+    def row_count(self):
+        ''' total number of rows '''
+        return self._parent._count_rows(self.lf)
 
 
     #╭-------------------------------------------------------------------------╮
@@ -137,7 +155,7 @@ class Dataset(odd.ReprMixin):
         ''' generates the comparison label for items found on one side but not
             the other '''
         dim = 'cols' if dim == 'columns' else dim
-        return f'{self.side} {dim} not in {self.other_side}'
+        return f'{self.alias} {dim} not in {self.other.alias}'
 
 
     def _init_alias(self, value):

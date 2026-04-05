@@ -786,13 +786,12 @@ class DeltaScan(odd.ReprMixin):
         '''
         Description
         ------------
-        ...
+        Records rows from each dataset that have no counterpart in the other.
 
         Parameters
         ------------
         df : pl.DataFrame
-            ...
-
+            Rows that exist in one dataset but not the other.
 
         Returns
         ------------
@@ -837,24 +836,11 @@ class DeltaScan(odd.ReprMixin):
 
             description = ds._to_not_in_description(dimension)
 
-            # When duplicates are allowed, a dataset's original row count
-            # cannot reliably be determined from the post-join result.
-            plan = (
-                ds.lf
-                if self.allow_duplicates
-                else lf.filter((
-                    self._row_origin.col
-                    .is_in(['both', ds.side])
-                    ))
-                )
-
-            total_count = self._count_rows(plan)
-
             self._add_difference(
                 description=description,
                 dimension=dimension,
                 df=unmatched,
-                total_count=total_count
+                total_count=ds.row_count
                 )
 
 
