@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "deltascan"
+version = "0.1.0"
+description = "Finds and summarizes the differences between two datasets."
+authors = ["Zachary Einck <zacharyeinck@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/zteinck/deltascan"
+homepage = "https://github.com/zteinck/deltascan"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+oddments = ">=0.8.1"
+pathpilot = ">=0.4.0"
+clockwork = ">=0.5.0"
+pandas = "*"
+polars = "*"
+pyarrow = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
