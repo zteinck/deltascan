@@ -53,6 +53,11 @@ class Schema(object):
         return item in self._dict
 
 
+    def __len__(self):
+        ''' number of columns in the schema '''
+        return len(self._dict)
+
+
     #╭-------------------------------------------------------------------------╮
     #| Cached Properties                                                       |
     #╰-------------------------------------------------------------------------╯
