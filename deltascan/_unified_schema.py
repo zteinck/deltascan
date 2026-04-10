@@ -1,10 +1,10 @@
 from functools import cached_property
 
+from clockwork import print_duration
 import oddments as odd
 import polars as pl
 
 from ._column import Column
-from ._decorators import print_status
 
 
 class UnifiedSchema(object):
@@ -284,7 +284,7 @@ class UnifiedSchema(object):
                 )
 
 
-    @print_status
+    @print_duration()
     def _compare_column_names(self):
         ''' detects columns present in one dataset but not the other '''
 
@@ -324,7 +324,7 @@ class UnifiedSchema(object):
                 )
 
 
-    @print_status
+    @print_duration()
     def _compare_column_types(self):
         ''' detects data type mismatches among columns present in both
             datasets '''

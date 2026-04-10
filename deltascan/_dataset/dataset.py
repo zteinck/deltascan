@@ -1,5 +1,6 @@
 from functools import cached_property
 
+from clockwork import print_duration
 import oddments as odd
 import polars as pl
 
@@ -88,6 +89,11 @@ class Dataset(odd.ReprMixin):
     @property
     def join_on(self):
         return self._parent.join_on
+
+
+    @property
+    def verbose(self):
+        return self._parent.verbose
 
 
     @property
@@ -195,6 +201,16 @@ class Dataset(odd.ReprMixin):
         return value
 
 
+    @print_duration()
+    def _assert_unique_join_keys(self, lf, name):
+        odd.assert_unique(
+            lf,
+            subset=self.join_on,
+            name=name,
+            null_policy='error'
+            )
+
+
     def _init_data(self, data):
         ''' resolves the data argument into LazyFrame and Schema instances '''
 
@@ -231,12 +247,16 @@ class Dataset(odd.ReprMixin):
         lf = lf.unique()
 
         # check for join key duplicates
-        if not self._parent.allow_duplicates:
-            odd.assert_unique(
-                lf,
-                subset=self.join_on,
-                name=param_name,
-                null_policy='error'
+        if not (
+            self._parent.allow_duplicates
+            or self._parent._join_on_index
+            ):
+            if self.verbose:
+                print(self.alias + ':')
+
+            self._assert_unique_join_keys(
+                lf=lf,
+                name=param_name
                 )
 
         # tag column names with dataset's alias

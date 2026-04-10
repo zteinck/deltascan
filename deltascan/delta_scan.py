@@ -1,13 +1,13 @@
 from functools import cached_property
 from numbers import Real
 
+from clockwork import print_duration
 from pathpilot import file_factory
 import oddments as odd
 import polars as pl
 
 from ._column import *
 from ._dataset import Dataset
-from ._decorators import print_status
 from ._context_columns import ContextColumns
 from ._unified_schema import UnifiedSchema
 
@@ -311,10 +311,6 @@ class DeltaScan(odd.ReprMixin):
 
     @property
     def allow_duplicates(self):
-        # False if joining on row index since duplicates cannot occur
-        if self._join_on_index:
-            return False
-
         return self._allow_duplicates
 
 
@@ -886,7 +882,7 @@ class DeltaScan(odd.ReprMixin):
         self._schema._compare_column_types()
 
 
-    @print_status
+    @print_duration()
     def _compare_rows_and_values(self):
         ''' detect unmatched rows and value differences '''
 
@@ -1132,6 +1128,7 @@ class DeltaScan(odd.ReprMixin):
             )
 
 
+    @print_duration()
     def _summarize_differences(self):
         '''
         Description
