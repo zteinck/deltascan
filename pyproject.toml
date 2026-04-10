@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "deltascan"
-version = "0.1.1"
+version = "0.1.2"
 description = "Finds and summarizes the differences between two datasets."
 authors = ["Zachary Einck <zacharyeinck@gmail.com>"]
 license = "MIT"
