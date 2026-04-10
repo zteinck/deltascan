@@ -17,20 +17,20 @@ pandas = "*"
 
 [[package]]
 name = "clockwork"
-version = "0.5.0"
+version = "0.6.0"
 description = "Toolkit for time-related operations including scheduling, logging, date manipulation, and more."
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "clockwork-0.5.0-py3-none-any.whl", hash = "sha256:ced9b799fad23f33d48ab367ed6d6e2f8f62f619b873d6d8c3d88bb76d892d2a"},
-    {file = "clockwork-0.5.0.tar.gz", hash = "sha256:5168c56904eac50a5823e3e52f525de104b6f862099a1717780732abab811a8e"},
+    {file = "clockwork-0.6.0-py3-none-any.whl", hash = "sha256:27c16dd06a39f8e9a1c23a7d1ac1dfe724835026c2ee0271314cf24e41fe8f1f"},
+    {file = "clockwork-0.6.0.tar.gz", hash = "sha256:39fccc035a2a66f1dd90ca6a9bbb87426ef80f01915eb6a05ad780eaf085c3b8"},
 ]
 
 [package.dependencies]
 holidays = "*"
 numpy = "*"
-oddments = ">=0.8.0"
+oddments = ">=0.8.1"
 pandas = "*"
 polars = "*"
 schedule = "*"
@@ -529,14 +529,14 @@ xml = ["lxml (>=5.3.0)"]
 
 [[package]]
 name = "pathpilot"
-version = "0.4.0"
+version = "0.4.2"
 description = "Library that facilitates file and folder manipulation in Python."
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "pathpilot-0.4.0-py3-none-any.whl", hash = "sha256:9482b2a84fddf509e8e7f6c6a5edae99e8bbba08fbf732293de1513f15d2ce51"},
-    {file = "pathpilot-0.4.0.tar.gz", hash = "sha256:8cdae4fc9657f3a8c5487d6446174acab193473cac6cbdf619ecc74d47fb7b2c"},
+    {file = "pathpilot-0.4.2-py3-none-any.whl", hash = "sha256:3f2e15529a53708de3bcc5e90cceee6092a2c610b7360893330088a0e17536d7"},
+    {file = "pathpilot-0.4.2.tar.gz", hash = "sha256:10f820c66a6c4dd9ec2f4cbfa7d425b3e0106dfaa3b16197fe62015daeceb4a7"},
 ]
 
 [package.dependencies]
@@ -853,4 +853,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.8"
-content-hash = "e60f7c12c7397650755d0913ad33a9403326dd72111b8c498321162c23d36143"
+content-hash = "4cb4cad15c32c7385032b20d9b4bd3b0711041ac849eeb1a99289e88a6d7d286"
