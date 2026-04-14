@@ -36,6 +36,7 @@ class Schema(object):
         '''
         self._dataset = dataset
         self._dict = lf.collect_schema()
+        self._validate_summary_name()
         self.df = self._init_frame()
 
 
@@ -93,6 +94,18 @@ class Schema(object):
     #╭-------------------------------------------------------------------------╮
     #| Instance Methods                                                        |
     #╰-------------------------------------------------------------------------╯
+
+    def _validate_summary_name(self):
+        ''' validates that no column name conflicts with the summary name '''
+        column = self._dataset._parent.summary_name
+
+        if column in self:
+            raise ValueError(
+                f"{self._dataset._data_param_name!r} includes a column name "
+                f"that conflicts with 'summary_name': {column!r}. Please "
+                "choose a different summary name."
+                )
+
 
     def _make_column(self, name):
         '''

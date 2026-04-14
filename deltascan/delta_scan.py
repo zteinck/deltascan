@@ -74,6 +74,7 @@ class DeltaScan(odd.ReprMixin):
         right_alias='right',
         delta_alias='delta',
         column_template='{alias}.{column}',
+        summary_name='summary',
         left_context=None,
         right_context=None,
         dimensions=None,
@@ -109,6 +110,10 @@ class DeltaScan(odd.ReprMixin):
         column_template : str
             Template for aliasing column names by dataset (e.g.
             '{alias}.{name}', '{name} ({alias})', etc.).
+        summary_name : str
+            Name used to identify the summary DataFrame. Serves as the
+            dictionary key in 'results' and as the Excel worksheet name when
+            exported.
         left_context : str | list[str] | dict[str: list[str]] | None
             Specifies which columns from 'left_data' to include in the
             comparison results for context. Strings are interpreted as column
@@ -157,6 +162,7 @@ class DeltaScan(odd.ReprMixin):
         self._join_on = odd.sanitize_subset(join_on)
         self._delta_alias = self._init_delta_alias(delta_alias)
         self._column_template = self._init_column_template(column_template)
+        self._summary_name = self._init_summary_name(summary_name)
         self._dimensions = self._init_dimensions(dimensions)
         self._ignore_columns = self._init_ignore_columns(ignore_columns)
         self._tolerance = self._init_tolerance(tolerance)
@@ -335,6 +341,11 @@ class DeltaScan(odd.ReprMixin):
 
 
     @property
+    def summary_name(self):
+        return self._summary_name
+
+
+    @property
     def summary(self):
         return self._summary.clone()
 
@@ -345,6 +356,19 @@ class DeltaScan(odd.ReprMixin):
             k: v.clone()
             for k, v in self._differences.items()
             }
+
+
+    @property
+    def results(self):
+        ''' dictionary containing both the summary and differences '''
+        key = self.summary_name
+
+        if key in self.differences:
+            raise AssertionError(
+                f'Unexpected key in differences: {key!r}'
+                )
+
+        return {key: self.summary} | self.differences
 
 
     @property
@@ -399,12 +423,7 @@ class DeltaScan(odd.ReprMixin):
     #| Instance Methods                                                        |
     #╰-------------------------------------------------------------------------╯
 
-    def to_excel(
-        self,
-        path=None,
-        summary_name='Summary',
-        **kwargs
-        ):
+    def to_excel(self, path=None, **kwargs):
         '''
         Description
         ------------
@@ -426,7 +445,6 @@ class DeltaScan(odd.ReprMixin):
             Excel file object.
         '''
 
-        params = {**kwargs}
         ext = 'xlsx'
 
         if path is None:
@@ -443,18 +461,7 @@ class DeltaScan(odd.ReprMixin):
                 f"Expected {ext!r}, got: {file.ext!r}"
                 )
 
-        diffs = self.differences
-
-        odd.validate_value(
-            value=summary_name,
-            name='summary_name',
-            types=str,
-            blacklist=list(diffs.keys()),
-            empty_ok=False,
-            )
-
-        results = {summary_name: self.summary} | diffs
-        file.save(results, df_backend='polars', **params)
+        file.save(self.results, df_backend='polars', **kwargs)
 
         return file
 
@@ -491,6 +498,17 @@ class DeltaScan(odd.ReprMixin):
             raise ValueError(
                 f'{name!r} must be printable.'
                 )
+
+        return value
+
+
+    def _init_summary_name(self, value):
+        odd.validate_value(
+            value=value,
+            name='summary_name',
+            types=str,
+            empty_ok=False,
+            )
 
         return value
 

@@ -123,6 +123,13 @@ class Dataset(odd.ReprMixin):
         return self.row_count, self.column_count
 
 
+    @property
+    def _data_param_name(self):
+        ''' name of the data argument passed to the owning class constructor;
+            used in error messages '''
+        return f'{self.side}_data'
+
+
     #╭-------------------------------------------------------------------------╮
     #| Cached Properties                                                       |
     #╰-------------------------------------------------------------------------╯
@@ -202,11 +209,11 @@ class Dataset(odd.ReprMixin):
 
 
     @print_duration()
-    def _assert_unique_join_keys(self, lf, name):
+    def _assert_unique_join_keys(self, lf):
         odd.assert_unique(
             lf,
             subset=self.join_on,
-            name=name,
+            name=self._data_param_name,
             null_policy='error'
             )
 
@@ -214,13 +221,10 @@ class Dataset(odd.ReprMixin):
     def _init_data(self, data):
         ''' resolves the data argument into LazyFrame and Schema instances '''
 
-        # data parameter name
-        param_name = f'{self.side}_data'
-
         # convert data to LazyFrame
         lf = odd.to_polars_frame(
             obj=data,
-            name=param_name,
+            name=self._data_param_name,
             lazy=True
             )
 
@@ -239,8 +243,8 @@ class Dataset(odd.ReprMixin):
 
         if missing_join_keys:
             raise ValueError(
-                f"{param_name!r} is missing join keys specified in "
-                f"'join_on': {missing_join_keys}"
+                f"{self._data_param_name!r} is missing join keys specified "
+                f"in 'join_on': {missing_join_keys}"
                 )
 
         # drop duplicate rows
@@ -254,10 +258,7 @@ class Dataset(odd.ReprMixin):
             if self.verbose:
                 print(self.alias + ':')
 
-            self._assert_unique_join_keys(
-                lf=lf,
-                name=param_name
-                )
+            self._assert_unique_join_keys(lf)
 
         # tag column names with dataset's alias
         lf = lf.rename({
@@ -343,9 +344,9 @@ class Dataset(odd.ReprMixin):
             ordered.extend(v)
             targeted[k] = to_aliased_set(v)
 
-        # validate ordered list against schema columns
+        # validate context columns against schema columns
         ordered = odd.sanitize_subset(
-            subset=ordered,
+            subset=ordered + list(targeted.keys()),
             superset=self.schema.columns,
             subset_name=repr(param_name),
             superset_name='schema'
