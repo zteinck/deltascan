@@ -1,22 +1,26 @@
-[tool.poetry]
+[project]
 name = "deltascan"
-version = "0.2.0"
+version = "0.2.1"
 description = "Finds and summarizes the differences between two datasets."
-authors = ["Zachary Einck <zacharyeinck@gmail.com>"]
-license = "MIT"
+authors = [
+    { name = "Zachary Einck", email = "zacharyeinck@gmail.com" }
+]
+license = { text = "MIT" }
 readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "clockwork>=0.6.1",
+    "oddments>=0.9.1",
+    "pandas>=3.0.2",
+    "pathpilot>=0.4.4",
+    "polars>=1.39.3",
+    "pyarrow>=23.0.1",
+]
+
+[project.urls]
 repository = "https://github.com/zteinck/deltascan"
 homepage = "https://github.com/zteinck/deltascan"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-oddments = ">=0.8.1"
-pathpilot = ">=0.4.2"
-clockwork = ">=0.6.0"
-pandas = "*"
-polars = "*"
-pyarrow = "*"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
