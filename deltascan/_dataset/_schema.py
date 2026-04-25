@@ -45,8 +45,9 @@ class Schema(object):
     #╰-------------------------------------------------------------------------╯
 
     def __iter__(self):
-        ''' iterate over schema column names '''
-        return iter(self._dict.keys())
+        ''' iterate over schema columns '''
+        for name in self.column_names:
+            yield self._make_column(name)
 
 
     def __contains__(self, item):
@@ -86,7 +87,7 @@ class Schema(object):
     #╰-------------------------------------------------------------------------╯
 
     @property
-    def columns(self):
+    def column_names(self):
         ''' list of column names '''
         return list(self._dict.keys())
 

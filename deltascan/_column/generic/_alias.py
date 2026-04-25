@@ -40,3 +40,8 @@ class Alias(ColumnBase):
     @property
     def base(self):
         return self._base
+
+
+    @property
+    def is_join_key(self):
+        return self.base.is_join_key

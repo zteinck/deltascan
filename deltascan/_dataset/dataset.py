@@ -237,7 +237,8 @@ class Dataset(odd.ReprMixin):
 
         # verify there are no missing join keys
         missing_join_keys = [
-            col for col in self.join_on
+            col
+            for col in self.join_on
             if col not in schema
             ]
 
@@ -262,9 +263,9 @@ class Dataset(odd.ReprMixin):
 
         # tag column names with dataset's alias
         lf = lf.rename({
-            col: self.apply_alias(col)
+            col.name: col.alias.name
             for col in schema
-            if col not in self.join_on
+            if not col.is_join_key
             })
 
         # add side-flag column
@@ -347,15 +348,22 @@ class Dataset(odd.ReprMixin):
         # validate context columns against schema columns
         ordered = odd.sanitize_subset(
             subset=ordered + list(targeted.keys()),
-            superset=self.schema.columns,
+            superset=self.schema.column_names,
             subset_name=repr(param_name),
             superset_name='schema'
             )
 
+        # convert to list of column instances
+        ordered = [
+            Column(name=col, dataset=self)
+            for col in ordered
+            ]
+
         # verify parameter excludes join keys
         join_keys = [
-            col for col in ordered
-            if col in self.join_on
+            col.name
+            for col in ordered
+            if col.is_join_key
             ]
 
         if join_keys:
@@ -363,11 +371,5 @@ class Dataset(odd.ReprMixin):
                 f"{param_name!r} cannot include join "
                 f"keys from 'join_on': {join_keys}"
                 )
-
-        # convert to list of column instances
-        ordered = [
-            Column(name=col, dataset=self)
-            for col in ordered
-            ]
 
         return ordered, universal, targeted

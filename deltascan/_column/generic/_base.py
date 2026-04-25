@@ -77,7 +77,19 @@ class ColumnBase(odd.ReprMixin):
             return self._expr.alias(self.name)
 
         raise AttributeError(
-            "Unexpected attempt to access 'expr' on column {self.name!r}. "
-            "This attribute is only available for columns derived from "
-            "expressions."
+            "Unexpected attempt to access 'expr' property on column "
+            f"{self.name!r}. This attribute is only available for columns "
+            "derived from expressions."
+            )
+
+
+    @property
+    def is_join_key(self):
+        if self._dataset is not None:
+            return self.name in self._dataset._parent._join_keys
+
+        raise AttributeError(
+            "Unexpected attempt to access 'is_join_key' property on column "
+            f"{self.name!r}. This attribute is only available for columns "
+            "that belong to a dataset."
             )

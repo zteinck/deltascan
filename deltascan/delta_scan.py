@@ -49,6 +49,7 @@ class DeltaScan(odd.ReprMixin):
         'join_on',
         'delta_alias',
         'column_template',
+        'summary_name',
         '_context',
         'dimensions',
         'ignore_columns',
@@ -57,6 +58,7 @@ class DeltaScan(odd.ReprMixin):
         'ignore_case',
         'allow_duplicates',
         'dtype_strict',
+        'full_rows',
         'verbose',
         ]
 
@@ -84,6 +86,7 @@ class DeltaScan(odd.ReprMixin):
         ignore_case=False,
         allow_duplicates=False,
         dtype_strict=False,
+        full_rows=False,
         verbose=False,
         ):
         '''
@@ -154,6 +157,10 @@ class DeltaScan(odd.ReprMixin):
                 provided they belong to the same data type family. For example
                 1 (Int64) and 1.0 (Float64) would be considered equal despite
                 having different data types because they are both numeric.
+        full_rows : bool
+            If True, unmatched rows in the comparison results include all
+            columns. Otherwise, only join keys and universal context columns
+            are included.
         verbose : bool
             If True, status information is printed during the comparison.
         '''
@@ -173,6 +180,7 @@ class DeltaScan(odd.ReprMixin):
             'ignore_whitespace': ignore_whitespace,
             'ignore_case': ignore_case,
             'dtype_strict': dtype_strict,
+            'full_rows': full_rows,
             'verbose': verbose,
             }.items():
             odd.validate_value(
@@ -277,6 +285,11 @@ class DeltaScan(odd.ReprMixin):
         return self._summarize_differences()
 
 
+    @cached_property
+    def _join_keys(self):
+        return set(self.join_on)
+
+
     #╭-------------------------------------------------------------------------╮
     #| Properties                                                              |
     #╰-------------------------------------------------------------------------╯
@@ -333,6 +346,11 @@ class DeltaScan(odd.ReprMixin):
     @property
     def dtype_strict(self):
         return self._dtype_strict
+
+
+    @property
+    def full_rows(self):
+        return self._full_rows
 
 
     @property
@@ -820,12 +838,20 @@ class DeltaScan(odd.ReprMixin):
 
         for ds in self._datasets:
 
-            # include all default context columns in order
-            context_columns = [
-                col.alias.name
-                for col in ds.context.ordered
-                if col.alias.name in ds.context.universal
-                ]
+            if self.full_rows:
+                # include all dataset columns in order
+                rename_map = {
+                    col.alias.name: col.name
+                    for col in ds.schema
+                    if not col.is_join_key
+                    }
+            else:
+                # include all universal context columns in order
+                rename_map = {
+                    col.alias.name: col.name
+                    for col in ds.context.ordered
+                    if col.alias.name in ds.context.universal
+                    }
 
             plan = (
                 lf
@@ -834,8 +860,11 @@ class DeltaScan(odd.ReprMixin):
                     ))
                 .select([
                     *self.join_on,
-                    *context_columns
+                    *list(rename_map.keys())
                     ])
+                .rename(
+                    rename_map
+                    )
                 )
 
             plans.append(plan)
