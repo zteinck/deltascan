@@ -1,7 +1,7 @@
 [project]
 name = "deltascan"
-version = "0.2.1"
-description = "Finds and summarizes the differences between two datasets."
+version = "0.3.0"
+description = "Finds and summarizes the differences between two datasets"
 authors = [
     { name = "Zachary Einck", email = "zacharyeinck@gmail.com" }
 ]
@@ -12,7 +12,7 @@ dependencies = [
     "clockwork>=0.6.1",
     "oddments>=0.9.1",
     "pandas>=3.0.2",
-    "pathpilot>=0.4.4",
+    "pathpilot>=0.4.6",
     "polars>=1.39.3",
     "pyarrow>=23.0.1",
 ]

@@ -42,7 +42,7 @@ wheels = [
 
 [[package]]
 name = "deltascan"
-version = "0.2.1"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "clockwork" },
@@ -58,9 +58,18 @@ requires-dist = [
     { name = "clockwork", specifier = ">=0.6.1" },
     { name = "oddments", specifier = ">=0.9.1" },
     { name = "pandas", specifier = ">=3.0.2" },
-    { name = "pathpilot", specifier = ">=0.4.4" },
+    { name = "pathpilot", specifier = ">=0.4.6" },
     { name = "polars", specifier = ">=1.39.3" },
     { name = "pyarrow", specifier = ">=23.0.1" },
+]
+
+[[package]]
+name = "et-xmlfile"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/38/af70d7ab1ae9d4da450eeec1fa3918940a5fafb9055e934af8d6eb0c2313/et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54", size = 17234, upload-time = "2024-10-25T17:25:40.039Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa", size = 18059, upload-time = "2024-10-25T17:25:39.051Z" },
 ]
 
 [[package]]
@@ -159,6 +168,18 @@ wheels = [
 ]
 
 [[package]]
+name = "openpyxl"
+version = "3.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "et-xmlfile" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/f9/88d94a75de065ea32619465d2f77b29a0469500e99012523b91cc4141cd1/openpyxl-3.1.5.tar.gz", hash = "sha256:cf0e3cf56142039133628b5acffe8ef0c12bc902d2aadd3e0fe5878dc08d1050", size = 186464, upload-time = "2024-06-28T14:03:44.161Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl", hash = "sha256:5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2", size = 250910, upload-time = "2024-06-28T14:03:41.161Z" },
+]
+
+[[package]]
 name = "pandas"
 version = "3.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -204,7 +225,7 @@ wheels = [
 
 [[package]]
 name = "pathpilot"
-version = "0.4.4"
+version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachegrab" },
@@ -212,13 +233,14 @@ dependencies = [
     { name = "fastexcel" },
     { name = "numpy" },
     { name = "oddments" },
+    { name = "openpyxl" },
     { name = "pandas" },
     { name = "polars" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/36/ee/c0b4cbb5b0c117819d1f953b0eae19cd77382d6f3581a909c22d195e113c/pathpilot-0.4.4.tar.gz", hash = "sha256:eb2542e69107b9bc3c440119ca2648658958b8ba9fe066dd25cf0c0d93bd5009", size = 50169, upload-time = "2026-04-15T04:12:24.915Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/ac/88ed13fa706a9f108fa252e94203cb969dc3e7982c34177d634594cab273/pathpilot-0.4.6.tar.gz", hash = "sha256:fb191fe4a8265f3768b6aed83a1ec38245ff23e079eb40bacd1494a4e233057c", size = 50608, upload-time = "2026-04-17T05:38:18.125Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/ee/8da9d1703dc6b10f9615ff0851c1ce693a14796c9cca72cbbab54cd32f3d/pathpilot-0.4.4-py3-none-any.whl", hash = "sha256:31f0714727044600498954c3125e8cd49a46b1e252f9ad7316d50d06ece8314e", size = 43919, upload-time = "2026-04-15T04:12:23.652Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/e8/709e98c467993a65c00fd20bc829efd36e843ddb35a3abbbc6bd17e71c12/pathpilot-0.4.6-py3-none-any.whl", hash = "sha256:92da687ada336b66144b2dab50b0472b6fdb4d6a0a4b08de4247c9fe3dba5d9e", size = 43934, upload-time = "2026-04-17T05:38:19.331Z" },
 ]
 
 [[package]]
