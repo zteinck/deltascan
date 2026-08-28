@@ -42,7 +42,7 @@ wheels = [
 
 [[package]]
 name = "deltascan"
-version = "0.3.0"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "clockwork" },
@@ -58,7 +58,7 @@ requires-dist = [
     { name = "clockwork", specifier = ">=0.6.1" },
     { name = "oddments", specifier = ">=0.9.1" },
     { name = "pandas", specifier = ">=3.0.2" },
-    { name = "pathpilot", specifier = ">=0.4.6" },
+    { name = "pathpilot", specifier = ">=0.6.0" },
     { name = "polars", specifier = ">=1.39.3" },
     { name = "pyarrow", specifier = ">=23.0.1" },
 ]
@@ -225,7 +225,7 @@ wheels = [
 
 [[package]]
 name = "pathpilot"
-version = "0.4.6"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachegrab" },
@@ -238,9 +238,9 @@ dependencies = [
     { name = "polars" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/ac/88ed13fa706a9f108fa252e94203cb969dc3e7982c34177d634594cab273/pathpilot-0.4.6.tar.gz", hash = "sha256:fb191fe4a8265f3768b6aed83a1ec38245ff23e079eb40bacd1494a4e233057c", size = 50608, upload-time = "2026-04-17T05:38:18.125Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/57/6533a5f0e828070c4170fe141cdd541ee3204939daba517c108a116e7787/pathpilot-0.6.0.tar.gz", hash = "sha256:d5b735fbbee8c01bc4424900c2865565c491d9d1429a3b4787531af593c69a2d", size = 50722, upload-time = "2026-08-28T00:27:12.343Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/e8/709e98c467993a65c00fd20bc829efd36e843ddb35a3abbbc6bd17e71c12/pathpilot-0.4.6-py3-none-any.whl", hash = "sha256:92da687ada336b66144b2dab50b0472b6fdb4d6a0a4b08de4247c9fe3dba5d9e", size = 43934, upload-time = "2026-04-17T05:38:19.331Z" },
+    { url = "https://files.pythonhosted.org/packages/42/ed/92ab9881838b5a88718ab96b5f0296ce495c5f3eb3f3d98c54f1796b868c/pathpilot-0.6.0-py3-none-any.whl", hash = "sha256:bb0a84e8dc26fc6861c4c9db1b4e8ab3220cb4c7c1a00f2168189e38d5652bf6", size = 44195, upload-time = "2026-08-28T00:27:11.443Z" },
 ]
 
 [[package]]
