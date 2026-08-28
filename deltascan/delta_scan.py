@@ -132,7 +132,7 @@ class DeltaScan(odd.ReprMixin):
                     the other, using 'join_on' for alignment.
                 • 'columns' → highlights differences in column presence and
                     data types between datasets.
-                • 'values → detects mismatched values in corresponding cells.
+                • 'values' → detects mismatched values in corresponding cells.
                 • None → performs a full comparison across all dimensions.
         ignore_columns : set | str
             Columns to exclude from the comparison.
