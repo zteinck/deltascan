@@ -10,7 +10,7 @@ class ColumnBase(odd.ReprMixin):
 
     Class Attributes
     --------------------
-    ...
+    None
 
     Instance Attributes
     --------------------

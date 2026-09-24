@@ -380,12 +380,15 @@ class UnifiedSchema(object):
             Shared columns within unified schema.
         '''
 
-        odd.validate_value(
-            value=compatible,
-            name='compatible',
+        (
+        odd.Validator(
             types=bool,
-            none_ok=True
+            allow_none=True,
             )
+        .validate(
+            compatible=compatible
+            )
+        )
 
         exprs = [
             (self._in_both_mask),

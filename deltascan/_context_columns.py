@@ -1,7 +1,10 @@
 import oddments as odd
 
 
-class ContextColumns(odd.ReprMixin):
+class ContextColumns(
+    odd.InitOnceMixin,
+    odd.ReprMixin,
+    ):
     '''
     Description
     --------------------
@@ -9,7 +12,7 @@ class ContextColumns(odd.ReprMixin):
 
     Class Attributes
     --------------------
-    ...
+    None
 
     Instance Attributes
     --------------------
@@ -47,12 +50,8 @@ class ContextColumns(odd.ReprMixin):
             ('universal', universal, set),
             ('targeted', targeted, dict),
             ):
-            odd.validate_value(
-                name=name,
-                value=value,
-                types=kind,
-                )
-            setattr(self, '_' + name, value)
+            odd.Validator(types=kind).validate(value, name)
+            self._init_internal_attr(name=name, value=value)
 
 
     #╭-------------------------------------------------------------------------╮

@@ -9,7 +9,7 @@ class Alias(ColumnBase):
 
     Class Attributes
     --------------------
-    ...
+    None
 
     Instance Attributes
     --------------------

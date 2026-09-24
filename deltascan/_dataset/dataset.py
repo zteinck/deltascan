@@ -17,7 +17,7 @@ class Dataset(odd.ReprMixin):
 
     Class Attributes
     --------------------
-    ...
+    None
 
     Instance Attributes
     --------------------
@@ -189,12 +189,16 @@ class Dataset(odd.ReprMixin):
             Validated alias.
         '''
 
-        odd.validate_value(
-            value=value,
-            name=f'{self.side}_alias',
+        (
+        odd.Validator(
             types=str,
-            empty_ok=False
+            allow_blank=False,
             )
+        .validate(
+            value,
+            f'{self.side}_alias',
+            )
+        )
 
         if (
             self.side == 'right'
@@ -223,7 +227,7 @@ class Dataset(odd.ReprMixin):
 
         # convert data to LazyFrame
         lf = odd.to_polars_frame(
-            obj=data,
+            data,
             name=self._data_param_name,
             lazy=True
             )
@@ -297,12 +301,16 @@ class Dataset(odd.ReprMixin):
         param_name = f'{self.side}_context'
 
         # validate parameter type
-        odd.validate_value(
-            value=value,
-            name=param_name,
+        (
+        odd.Validator(
             types=(str, list, dict),
-            none_ok=True
+            allow_none=True,
             )
+        .validate(
+            value,
+            param_name,
+            )
+        )
 
         # set up default values
         ordered = list()
@@ -317,13 +325,13 @@ class Dataset(odd.ReprMixin):
         value = odd.ensure_list(value)
 
         # parse parameter
+        vd = odd.Validator(
+            types=(str, dict),
+            allow_empty=False,
+            )
+
         for i, x in enumerate(value):
-            odd.validate_value(
-                value=x,
-                name=f'{param_name!r} element {i}',
-                types=(str, dict),
-                empty_ok=False
-                )
+            vd.validate(x, f'{param_name!r} element {i}')
 
             if isinstance(x, str):
                 ordered.append(x)

@@ -12,7 +12,10 @@ from ._context_columns import ContextColumns
 from ._unified_schema import UnifiedSchema
 
 
-class DeltaScan(odd.ReprMixin):
+class DeltaScan(
+    odd.InitOnceMixin,
+    odd.ReprMixin,
+    ):
     '''
     Description
     --------------------
@@ -20,7 +23,7 @@ class DeltaScan(odd.ReprMixin):
 
     Class Attributes
     --------------------
-    ...
+    None
 
     Instance Attributes
     --------------------
@@ -175,6 +178,8 @@ class DeltaScan(odd.ReprMixin):
         self._tolerance = self._init_tolerance(tolerance)
 
         # initialize boolean attributes from user parameters
+        vd = odd.Validator(types=bool)
+
         for name, value in {
             'allow_duplicates': allow_duplicates,
             'ignore_whitespace': ignore_whitespace,
@@ -183,12 +188,9 @@ class DeltaScan(odd.ReprMixin):
             'full_rows': full_rows,
             'verbose': verbose,
             }.items():
-            odd.validate_value(
-                name=name,
-                value=value,
-                types=bool
-                )
-            setattr(self, '_' + name, value)
+
+            vd.validate(value, name)
+            self._init_internal_attr(name=name, value=value)
 
         # initialize left & right datasets
         self._left_data = Dataset(
@@ -485,12 +487,16 @@ class DeltaScan(odd.ReprMixin):
 
 
     def _init_delta_alias(self, value):
-        odd.validate_value(
-            value=value,
-            name='delta_alias',
+        (
+        odd.Validator(
             types=str,
-            empty_ok=False
+            allow_blank=False,
             )
+        .validate(
+            value,
+            'delta_alias',
+            )
+        )
 
         return value
 
@@ -498,12 +504,16 @@ class DeltaScan(odd.ReprMixin):
     def _init_column_template(self, value):
         name = 'column_template'
 
-        odd.validate_value(
-            value=value,
-            name=name,
+        (
+        odd.Validator(
             types=str,
-            empty_ok=False
+            allow_blank=False,
             )
+        .validate(
+            value,
+            name,
+            )
+        )
 
         for placeholder in ['{alias}','{column}']:
             if placeholder not in value:
@@ -521,12 +531,16 @@ class DeltaScan(odd.ReprMixin):
 
 
     def _init_summary_name(self, value):
-        odd.validate_value(
-            value=value,
-            name='summary_name',
+        (
+        odd.Validator(
             types=str,
-            empty_ok=False,
+            allow_blank=False,
             )
+        .validate(
+            value,
+            'summary_name',
+            )
+        )
 
         return value
 
@@ -547,14 +561,18 @@ class DeltaScan(odd.ReprMixin):
 
 
     def _init_tolerance(self, value):
-        odd.validate_value(
-            value=value,
-            name='tolerance',
+        (
+        odd.Validator(
             types=Real,
-            finite=True,
             min_value=0,
             min_inclusive=True,
+            require_finite=True,
             )
+        .validate(
+            value,
+            'tolerance',
+            )
+        )
 
         return value
 
@@ -690,11 +708,15 @@ class DeltaScan(odd.ReprMixin):
             Boolean mask expression.
         '''
 
-        odd.validate_value(
-            value=value,
+        (
+        odd.Validator(
             types=str,
-            whitelist=['both','left','right']
+            whitelist=['both','left','right'],
             )
+        .validate(
+            value=value
+            )
+        )
 
         return self._row_origin.col == value
 
