@@ -1,6 +1,6 @@
 [project]
 name = "deltascan"
-version = "0.3.1"
+version = "0.3.2"
 description = "Finds and summarizes the differences between two datasets"
 authors = [
     { name = "Zachary Einck", email = "zacharyeinck@gmail.com" }
@@ -9,10 +9,10 @@ license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "clockwork>=0.6.1",
-    "oddments>=0.9.1",
+    "clockwork>=0.7.0",
+    "oddments>=0.10.0",
     "pandas>=3.0.2",
-    "pathpilot>=0.6.0",
+    "pathpilot>=0.7.1",
     "polars>=1.39.3",
     "pyarrow>=23.0.1",
 ]

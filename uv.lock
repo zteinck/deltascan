@@ -25,7 +25,7 @@ wheels = [
 
 [[package]]
 name = "clockwork"
-version = "0.6.1"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "holidays" },
@@ -33,16 +33,17 @@ dependencies = [
     { name = "oddments" },
     { name = "pandas" },
     { name = "polars" },
+    { name = "python-dateutil" },
     { name = "schedule" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3c/ba/0ec1108a3ee52e7af54de84b205505b8ee77a7301ddbd463bae77ef4cf0d/clockwork-0.6.1.tar.gz", hash = "sha256:6d5a85057d0d1139c11df055578d5f6f94ff9d5b5669ba4d8af60c7822121f19", size = 34257, upload-time = "2026-04-15T04:03:05.161Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/af/0d4e5425f97f010490866f1be341a54d5c165e0868275a81416e1b359faa/clockwork-0.7.0.tar.gz", hash = "sha256:a046c241e5c99175536ffd105b51c21e7ed44651fab952f71d202e8ae4277fe5", size = 36965, upload-time = "2026-09-22T04:32:36.015Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/35/3e22d56ddd7303e9496d31792b85379d583fbbb489e81add8c353c56c6bb/clockwork-0.6.1-py3-none-any.whl", hash = "sha256:bb28e7f1729ba2dcb14d3676ac7a6ccc2af3b169473d757e02f183d353c9c4f4", size = 25266, upload-time = "2026-04-15T04:03:06.186Z" },
+    { url = "https://files.pythonhosted.org/packages/51/99/4a03fc7edc257386b63d19178223116623d27bbfe40c0f69c4fb7e2e3f1c/clockwork-0.7.0-py3-none-any.whl", hash = "sha256:e90913a38d9ce33460c6ed9bb8600894df33903631250980dae06b933fb8d72b", size = 26626, upload-time = "2026-09-22T04:32:34.784Z" },
 ]
 
 [[package]]
 name = "deltascan"
-version = "0.3.1"
+version = "0.3.2"
 source = { editable = "." }
 dependencies = [
     { name = "clockwork" },
@@ -55,10 +56,10 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "clockwork", specifier = ">=0.6.1" },
-    { name = "oddments", specifier = ">=0.9.1" },
+    { name = "clockwork", specifier = ">=0.7.0" },
+    { name = "oddments", specifier = ">=0.10.0" },
     { name = "pandas", specifier = ">=3.0.2" },
-    { name = "pathpilot", specifier = ">=0.6.0" },
+    { name = "pathpilot", specifier = ">=0.7.1" },
     { name = "polars", specifier = ">=1.39.3" },
     { name = "pyarrow", specifier = ">=23.0.1" },
 ]
@@ -154,7 +155,7 @@ wheels = [
 
 [[package]]
 name = "oddments"
-version = "0.9.1"
+version = "0.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
@@ -162,9 +163,9 @@ dependencies = [
     { name = "polars" },
     { name = "pyarrow" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/0b/7ff64c1d5e38abb84335ff3cd6a87e601d0f1482435ce52965063afdefaf/oddments-0.9.1.tar.gz", hash = "sha256:10adb4f982ca31ddddf424b426b63f4cbad4236e6abbc30737cb9f657d6f79d4", size = 35560, upload-time = "2026-04-15T03:53:23.525Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/87/40/ccef83e32b28773a2e877d0760b060a2f594a5c414283fe44ca6afaa92c3/oddments-0.10.0.tar.gz", hash = "sha256:f7233204bbbc31c2fd6aa4ead8cbfafd333d9e85b5e4d49e99eaa8fb81064570", size = 40269, upload-time = "2026-09-16T02:47:34.665Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/f0/4da3cafb6be41efac24ab2916e74449b40b24d6998a82ffeee09d818bd46/oddments-0.9.1-py3-none-any.whl", hash = "sha256:2eb1f27130abec542c025aeb832568e9a2d02d49dd6f3039643dc53fdd27997b", size = 31606, upload-time = "2026-04-15T03:53:24.255Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/d3/bf8b89c36e73119c688debebfa68253c633ff2540108de0cbbfc39b88fca/oddments-0.10.0-py3-none-any.whl", hash = "sha256:0c3f48c442a095ee802185b9a0fb10ab85c8adb319c349727b66ccb642a4c251", size = 37056, upload-time = "2026-09-16T02:47:35.517Z" },
 ]
 
 [[package]]
@@ -225,7 +226,7 @@ wheels = [
 
 [[package]]
 name = "pathpilot"
-version = "0.6.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachegrab" },
@@ -238,9 +239,9 @@ dependencies = [
     { name = "polars" },
     { name = "xlsxwriter" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/57/6533a5f0e828070c4170fe141cdd541ee3204939daba517c108a116e7787/pathpilot-0.6.0.tar.gz", hash = "sha256:d5b735fbbee8c01bc4424900c2865565c491d9d1429a3b4787531af593c69a2d", size = 50722, upload-time = "2026-08-28T00:27:12.343Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/6b/d0dac9189c0b70ed258a59fff56604f17f365b400e0463aff6fe40349aad/pathpilot-0.7.1.tar.gz", hash = "sha256:9e2afe5eb3da348807cbceda546255f92316bc21c37ab8ad7b995f9b3dcdab4d", size = 51176, upload-time = "2026-09-24T04:31:15.574Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/ed/92ab9881838b5a88718ab96b5f0296ce495c5f3eb3f3d98c54f1796b868c/pathpilot-0.6.0-py3-none-any.whl", hash = "sha256:bb0a84e8dc26fc6861c4c9db1b4e8ab3220cb4c7c1a00f2168189e38d5652bf6", size = 44195, upload-time = "2026-08-28T00:27:11.443Z" },
+    { url = "https://files.pythonhosted.org/packages/89/a8/42796f923a7112b203710e35985b0b63eda839e22b9ff528251b7cda775b/pathpilot-0.7.1-py3-none-any.whl", hash = "sha256:d1b1b49fbdf9a79695b5a0abf4d0ef847e29edac101ccb4bda52a4dfb92d6dcd", size = 45055, upload-time = "2026-09-24T04:31:14.399Z" },
 ]
 
 [[package]]
