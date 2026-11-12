@@ -96,7 +96,7 @@ class ContextColumns(
 
         Returns
         ------------
-        out : list
+        result : list
             Ordered list of column names to include for context.
         '''
 
@@ -105,10 +105,10 @@ class ContextColumns(
                 f'Column name not found in schema: {key!r}'
                 )
 
-        out = []
+        result = []
 
         if self.empty:
-            return out
+            return result
 
         extras = self.targeted.get(key, set())
         include = self.universal.union(extras)
@@ -120,6 +120,6 @@ class ContextColumns(
             alias = col.alias.name
 
             if alias in include:
-                out.append(alias)
+                result.append(alias)
 
-        return out
+        return result

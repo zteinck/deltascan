@@ -236,7 +236,7 @@ class DeltaScan(
 
         Returns
         ------------
-        out : ContextColumns
+        context_columns : ContextColumns
             Merged instance.
         '''
 
@@ -244,14 +244,14 @@ class DeltaScan(
         universal = self._merge_universal_context_columns()
         targeted = self._merge_targeted_context_columns()
 
-        out = ContextColumns(
+        context_columns = ContextColumns(
             parent=self,
             ordered=ordered,
             universal=universal,
             targeted=targeted
             )
 
-        return out
+        return context_columns
 
 
     @cached_property
@@ -546,18 +546,18 @@ class DeltaScan(
 
 
     def _init_dimensions(self, value):
-        out = odd.sanitize_subset(
+        result = odd.sanitize_subset(
             subset=value,
             superset=['rows','columns','values'],
             subset_name='dimensions',
             )
 
-        return set(out)
+        return set(result)
 
 
     def _init_ignore_columns(self, value):
-        out = odd.sanitize_subset(value)
-        return set(out or [])
+        columns = odd.sanitize_subset(value)
+        return set(columns or [])
 
 
     def _init_tolerance(self, value):
@@ -585,7 +585,7 @@ class DeltaScan(
 
         Returns
         ------------
-        out : list
+        result : list
             Merged list of ordered context columns.
         '''
 
@@ -605,17 +605,17 @@ class DeltaScan(
             for col in right.ordered
             }
 
-        out = []
+        result = []
 
         for col in left.ordered:
-            out.append(col)
+            result.append(col)
 
             if col.name in right_map:
-                out.append(right_map.pop(col.name))
+                result.append(right_map.pop(col.name))
 
-        out.extend(list(right_map.values()))
+        result.extend(list(right_map.values()))
 
-        return out
+        return result
 
 
     def _merge_universal_context_columns(self):
@@ -626,7 +626,7 @@ class DeltaScan(
 
         Returns
         ------------
-        out : set
+        result : set
             Merged set of universal context columns.
         '''
 
@@ -740,13 +740,13 @@ class DeltaScan(
 
         Returns
         ------------
-        obj : pl.LazyFrame | pl.DataFrame
+        result : pl.LazyFrame | pl.DataFrame
             Amended query plan or join result including a new '_row_origin'
             categorical column.
         '''
 
         # full join left and right data
-        out = left_data.join(
+        result = left_data.join(
             right_data,
             on=join_on,
             how='full',
@@ -759,8 +759,8 @@ class DeltaScan(
             for ds in self._datasets
             )
 
-        out = (
-            out
+        result = (
+            result
             .with_columns(
                 pl.when((left_flag) & (right_flag))
                 .then(pl.lit('both'))
@@ -774,7 +774,7 @@ class DeltaScan(
             .drop([left_flag, right_flag])
             )
 
-        return out
+        return result
 
 
     def _get_value_comparison_specs(self):
@@ -1018,7 +1018,7 @@ class DeltaScan(
 
             df = df.drop(row_diff.name)
 
-        # return early if there are no matched rows or values are out-of-scope
+        # return early if there are no matched rows or values are result-of-scope
         if df.is_empty() or not self._vals_in_scope:
             return
 
